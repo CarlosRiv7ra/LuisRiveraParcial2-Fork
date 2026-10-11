@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Global Academy | Dashboard</title>
+  <style>
+    :root {
+      --vino-oscuro: #5a1426;
+      --vino: #7b1e36;
+      --vino-claro: #a23a55;
+      --celeste: #dcecf6;
+      --celeste-medio: #b9d9ec;
+      --fondo: #eef5fa;
+      --naranja: #f59a3d;
+      --naranja-suave: #fde3c6;
+      --texto: #1d1d26;
+      --blanco: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      line-height: 1.35;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    .encabezado {
+      display: flex; align-items: center; gap: 24px;
+      padding: 12px 18px; background: var(--blanco);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800;
+            font-size: 22px; line-height: 1; color: var(--vino-oscuro); }
+    .logo svg { width: 46px; height: 46px; }
+    .buscador { flex: 1; max-width: 385px; margin: 0 auto; }
+    .buscador input {
+      width: 100%; padding: 10px 16px 10px 40px; border-radius: 20px;
+      border: 1px solid #9fb4c2; background: var(--celeste) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23555' stroke-width='2'><circle cx='7.5' cy='7.5' r='5.5'/><path d='M12 12l5 5'/></svg>") no-repeat 14px center;
+      font-size: 15px;
+    }
+    .acciones { display: flex; align-items: center; gap: 18px; }
+    .campana { position: relative; width: 22px; height: 22px; }
+    .campana::after { content: ""; position: absolute; top: -4px; right: -6px;
+      width: 12px; height: 12px; background: var(--naranja); border-radius: 50%; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: #c9cdd2; }
+
+    .nav { background: var(--vino-oscuro); }
+    .nav ul { display: flex; }
+    .nav li { flex: 1; text-align: center; }
+    .nav a { display: block; padding: 12px 8px; color: var(--blanco);
+             font-size: 15px; letter-spacing: .3px; }
+    .nav a.activo { background: #3f0d1b; color: var(--naranja); }
+
+    .contenedor {
+      display: grid; grid-template-columns: 165px 1fr; gap: 14px;
+      padding: 16px 18px 20px; align-items: start;
+    }
+    .principal { display: grid; gap: 14px; }
+
+    .tarjeta { background: var(--blanco); border: 1px solid var(--vino);
+               border-radius: 4px; overflow: hidden; }
+    .tarjeta > h2, .acceso > h2 {
+      font-size: 17px; font-weight: 600; padding: 10px 12px;
+      color: var(--blanco); text-transform: uppercase;
+    }
+    .tarjeta > h2 { background: var(--vino-claro); }
+    .tarjeta.naranja > h2 { background: var(--naranja); color: #3a1b00; }
+
+    .acceso { background: var(--blanco); border: 1px solid var(--vino);
+              border-radius: 4px; overflow: hidden; padding-bottom: 12px; }
+    .acceso > h2 { background: var(--vino-oscuro); text-align: center; font-size: 16px; }
+    .acceso ul { display: grid; gap: 12px; padding: 12px 10px 0; }
+    .acceso a {
+      display: block; padding: 17px 6px; text-align: center; font-weight: 600;
+      background: var(--celeste); border: 1px solid var(--vino); border-radius: 5px;
+    }
+    .acceso a.resaltado { background: var(--naranja-suave); border-color: var(--naranja); }
+
+    .hub { padding: 10px; }
+    .banner {
+      min-height: 142px; border-radius: 4px; display: grid; place-content: center;
+      text-align: center; color: var(--blanco); padding: 14px 40px;
+      background: linear-gradient(90deg, rgba(60,10,28,.92), rgba(110,30,54,.8) 55%, rgba(170,110,100,.65)),
+                  radial-gradient(circle at 85% 40%, #d7a083, #6b2a3a 70%);
+    }
+    .banner h1 { font-size: 26px; font-weight: 600; margin-bottom: 10px; }
+    .banner p { font-size: 15px; max-width: 440px; }
+
+    .fila { display: grid; grid-template-columns: 1.85fr 1fr; gap: 14px; align-items: start; }
+
+    .horario { padding: 10px 10px 12px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; border: 2px solid var(--vino-oscuro); }
+    th { background: var(--vino-oscuro); color: var(--blanco); font-weight: 600;
+         text-align: left; padding: 8px 7px; border: 1px solid var(--vino); }
+    td { background: var(--celeste); border: 1px solid #5d7d93; padding: 7px; vertical-align: middle; }
+    td.modulo { background: var(--celeste); font-weight: 500; }
+    td ul { list-style: disc; padding-left: 16px; }
+    .ok  { background: var(--celeste-medio); }
+    .pend { background: var(--naranja-suave); }
+
+    .lecturas { padding: 12px; display: grid; gap: 12px; }
+    .lectura { display: grid; grid-template-columns: 62px 1fr; gap: 10px;
+               border: 1px solid var(--vino); border-radius: 6px; padding: 8px; }
+    .lectura .miniatura { width: 62px; height: 62px; border-radius: 4px; }
+    .m1 { background: linear-gradient(135deg, #8aa6b8, #c9b7a6); }
+    .m2 { background: linear-gradient(135deg, #5b4a4a, #cdb4a0); }
+    .m3 { background: linear-gradient(135deg, #7a3a3a, #d9b99b); }
+    .lectura h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .lectura p { font-size: 11.5px; }
+
+    .formulario { padding: 14px 14px 16px; display: grid; gap: 14px; }
+    .grupo { display: grid; gap: 6px; }
+    .dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { font-weight: 600; font-size: 14px; }
+    label .req { color: var(--vino-claro); }
+    input[type="text"], select, textarea {
+      width: 100%; padding: 9px 10px; font: inherit; font-size: 14px;
+      border: 1px solid var(--vino); border-radius: 4px; background: var(--blanco);
+    }
+    select { background: #eef2f5; }
+    textarea { min-height: 80px; resize: vertical; }
+    input:focus, select:focus, textarea:focus, button:focus-visible {
+      outline: 3px solid var(--naranja); outline-offset: 1px;
+    }
+    button[type="submit"] {
+      justify-self: start; padding: 9px 22px; border: 0; border-radius: 5px;
+      background: var(--naranja); color: var(--blanco); font-weight: 600;
+      font-size: 14px; cursor: pointer;
+    }
+    button[type="submit"]:hover { background: #e0832a; }
+
+    .pie { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+           padding: 18px; background: var(--vino-oscuro); color: var(--blanco); font-size: 14px; }
+    .pie ul { display: flex; gap: 22px; }
+
+    @media (max-width: 800px) {
+      .contenedor, .fila, .dos-col { grid-template-columns: 1fr; }
+      .nav ul { flex-wrap: wrap; }
+      .encabezado { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="encabezado">
+    <a href="#" class="logo" aria-label="Global Academy, inicio">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="20" stroke="#7b1e36" stroke-width="3"/>
+        <ellipse cx="24" cy="24" rx="9" ry="20" stroke="#7b1e36" stroke-width="2"/>
+        <path d="M4 24h40M8 14h32M8 34h32" stroke="#7b1e36" stroke-width="2"/>
+        <path d="M10 36l10-8 7 4 12-14" stroke="#f59a3d" stroke-width="3.5" stroke-linecap="round"/>
+      </svg>
+      <span>GLOBAL<br>ACADEMY</span>
+    </a>
+
+    <form class="buscador" role="search" action="#">
+      <label for="buscar" hidden>Buscar</label>
+      <input type="search" id="buscar" name="q" placeholder="Search...">
+    </form>
+
+    <div class="acciones">
+      <span aria-label="Aplicaciones">&#9638;</span>
+      <span class="campana" role="img" aria-label="Notificaciones">&#128276;</span>
+      <span class="avatar" role="img" aria-label="Perfil de usuario"></span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Principal">
+    <ul>
+      <li><a href="#" class="activo">DASHBOARD</a></li>
+      <li><a href="#">MY COURSES</a></li>
+      <li><a href="#">RESOURCES</a></li>
+      <li><a href="#">COMMUNITY</a></li>
+      <li><a href="#">HELP</a></li>
+    </ul>
+  </nav>
+
+  <div class="contenedor">
+
+    <aside class="acceso" aria-labelledby="t-acceso">
+      <h2 id="t-acceso">QUICK ACCESS</h2>
+      <ul>
+        <li><a href="#">Announcements</a></li>
+        <li><a href="#" class="resaltado">Calendar Events</a></li>
+        <li><a href="#">Grades</a></li>
+        <li><a href="#">Faculty Directory</a></li>
+      </ul>
+    </aside>
+
+    <main class="principal">
+
+      <section class="tarjeta" aria-labelledby="t-hub">
+        <h2 id="t-hub">Learning Hub</h2>
+        <div class="hub">
+          <div class="banner">
+            <h1>WELCOME BACK</h1>
+            <p>Join your bank at learning and tips in the motivational. and get into your community truth.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="fila">
+
+        <section class="tarjeta naranja" aria-labelledby="t-horario">
+          <h2 id="t-horario">Course Schedule</h2>
+          <div class="horario">
+            <table>
+              <caption hidden>Horario de cursos por módulo</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Module</th><th scope="col">Topic</th>
+                  <th scope="col">Instructor</th><th scope="col">Date</th><th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="modulo" rowspan="3">Module 1</td>
+                  <td><ul><li>Learning &amp; Profession Courses</li></ul></td>
+                  <td>John B.B.</td><td>8/12/2024</td><td class="ok">Complete</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Explorement Learning</li></ul></td>
+                  <td>BerniMant</td><td>3/11/2024</td><td class="ok">Complete</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Summary Learning</li></ul></td>
+                  <td>Jim F.</td><td>1/12/2024</td><td class="pend">Complete</td>
+                </tr>
+
+                <tr>
+                  <td class="modulo" rowspan="4">Module 2</td>
+                  <td><ul><li>Student Schedule</li></ul></td>
+                  <td>Geman S.</td><td>8/12/2024</td><td class="ok">Success</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Developmental Learning</li></ul></td>
+                  <td>Flaschhster</td><td>0/12/2024</td><td class="pend">Success</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Social Learning</li><li>Designs &amp; communicities</li></ul></td>
+                  <td>Mariv W.</td><td>8/12/2024</td><td class="pend">Plan</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Summary Schedule</li></ul></td>
+                  <td>Jims A.</td><td>0/13/2024</td><td class="pend">Plan</td>
+                </tr>
+
+                <tr>
+                  <td class="modulo" rowspan="3">Module 3</td>
+                  <td><ul><li>Student Learning</li></ul></td>
+                  <td>Marw M.</td><td>9/12/2024</td><td class="ok">Complete</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Complete Learning</li></ul></td>
+                  <td>Geman S.</td><td>0/12/2024</td><td class="ok">Success</td>
+                </tr>
+                <tr>
+                  <td><ul><li>Developmental Learning</li></ul></td>
+                  <td>Flaschhster</td><td>9/13/2024</td><td class="pend">Success</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="tarjeta naranja" aria-labelledby="t-lectura">
+          <h2 id="t-lectura">Recommended Reading</h2>
+          <div class="lecturas">
+            <article class="lectura">
+              <div class="miniatura m1" role="img" aria-label="Estudiantes leyendo"></div>
+              <div>
+                <h3>Recommended Articles</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, immorcant dis toars and mendal wkinta nularating conteept.</p>
+              </div>
+            </article>
+            <article class="lectura">
+              <div class="miniatura m2" role="img" aria-label="Persona escribiendo"></div>
+              <div>
+                <h3>Fast Fittine Becoming Articles</h3>
+                <p>Foilolengistiqmiller commants authnienitaries and inscium personaded oraids, saic at compandus card the-tingruml.</p>
+              </div>
+            </article>
+            <article class="lectura">
+              <div class="miniatura m3" role="img" aria-label="Estudiante con laptop"></div>
+              <div>
+                <h3>Recommended Articles</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur senor aricultural artich comver ax exinecate fert menting portiones.</p>
+              </div>
+            </article>
+          </div>
+        </aside>
+      </div>
+
+      <section class="tarjeta" aria-labelledby="t-feedback">
+        <h2 id="t-feedback">Feedback &amp; Support</h2>
+
+        <form class="formulario" action="#" method="post">
+
+          <div class="dos-col">
+            <div class="grupo">
+              <label for="subject">Subject <span class="req" aria-hidden="true">*</span></label>
+              <input type="text" id="subject" name="subject" required
+                     minlength="3" maxlength="100" autocomplete="off">
+            </div>
+
+            <div class="grupo">
+              <label for="category">Category <span class="req" aria-hidden="true">*</span></label>
+              <select id="category" name="category" required>
+                <option value="" selected disabled>Select Category</option>
+                <option value="consulta">Consulta</option>
+                <option value="comentario">Comentario</option>
+                <option value="soporte">Soporte técnico</option>
+                <option value="sugerencia">Sugerencia</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grupo">
+            <label for="message">Your Message <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="4" required
+                      minlength="10" maxlength="1000"></textarea>
+          </div>
+
+          <button type="submit">Send</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="pie">
+    <ul>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Use</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <p>&copy; 2024 GLOBAL ACADEMY</p>
+  </footer>
+
+</body>
+</html>
